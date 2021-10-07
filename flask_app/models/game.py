@@ -11,9 +11,10 @@ class Games:
     def __init__(self, data):
         self.id=data['id']
         self.game_type=data['game_type']
+        self.game_name=data['game_name']
         self.level=data['level']
-        self.min_digit=data['min_digit']
-        self.max_digit=data['max_digit']
+        self.min_element=data['min_element']
+        self.max_element=data['max_element']
         self.min_line=data['min_line']
         self.max_line=data['max_line']
         self.max_question=data['max_question']
@@ -22,13 +23,22 @@ class Games:
         self.updated_at=data['updated_at']
 
     @classmethod
-    def get_level_data(cls, data):
+    def get_menu_data(cls, data):
         print('***  3000  ***')
-        query = "SELECT * FROM game_level WHERE game_type = %(game_type)s AND level = %(level)s"
+        query = "SELECT * FROM game_level WHERE game_type = %(game_type)s ORDER BY level"
         print('***  3000A  ***', query)
+        result = []
+        levels = connectToMySQL('games').query_db(query, data)
+        print('***  3000B  ***', result)
+        for j in levels:
+            result.append(cls(j))
+        return result
+
+    @classmethod
+    def get_level_data(cls, data):
+        print('***  3100  ***')
+        query = "SELECT * FROM game_level WHERE game_type = %(game_type)s AND level = %(level)s"
+        print('***  3100A  ***', query)
         result = connectToMySQL('games').query_db(query, data)
-        print('***  3000B  ***', result[0])
+        print('***  3100B  ***', result[0])
         return cls(result[0])
-
-
-

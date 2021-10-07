@@ -12,9 +12,16 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <title>{{ session.game_name }}</title>
+    <style>
+        .gallery{ width:100%; float:left;}
+        .gallery ul{ margin:0; padding:0; list-style-type:none;}
+        .gallery ul li{ padding:10px; border:2px solid #ccc; font-size:xx-large ; float:left; margin:10px 7px; background:none; width:auto; height:auto;}
+    </style>
 </head>
-<body>
+<body onload="updateOrder()"">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/dashboard">Games</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,22 +79,25 @@
                         <h1>Level {{ session.level }}</h1>
                     </div>
                 </div>
+                <div id="test"></div>
                 <div class="row">
                     {% if not session.gameover %}
                         <div class="col-lg-6">
                             <div class="card text-right">
                                 <div class="card-body">
-                                    {% for j in range(0, session.question_data|length - 1) %}
-                                        <h1 class="Display-3">{{ session.question_data[j] }}</h1>
-                                    {% endfor %}
-                                    <h1 class="Display-3">+ {{ session.question_data[session.question_data|length - 1] }}</h1>
-                                    <hr>
                                     <form action="/games/{{ session['game_type'] }}/{{ session['level'] }}" method="POST">
                                         <div class="form-group">
                                             <div>
-                                                <input type="number" class="my-2 text-right Display-3 form-control form-control-lg" autofocus="autofocus" name="answer">
+                                                <ul class="gallery">
+                                                    <ul class="sentence-sorting">
+                                                        {% for j in range(0, session.question_data|length) %}
+                                                        <li id="{{ session.question_data[j][0] }}" class="Display-3">{{ session.question_data[j][1] }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </ul>
                                             </div>
                                             <div>
+                                                <input type="hidden" id="answer" name="answer" value="">
                                                 <button type="submit" class="btn btn-primary">Submit</button>
                                             </div>
                                         </div>
@@ -115,9 +125,15 @@
                                 <h3 class="text-success">{{ session.question_correct }}</h3>
                                 <h3>Incorrect:</h3>
                                 <h3 class="text-danger">{{ session.question_incorrect}}</h3>
-                                <div class="row">
-                                    <a href="/games/{{ session.game_type}}/{{ session.level}}/loading" class="btn btn-outline-dark">Replay</a>
-                                </div>
+                                {% if not session.gameover %}
+                                    <div class="row justify-content-center">
+                                        <a href="/games/{{ session.game_type}}" class="btn btn-outline-dark">Restart</a>
+                                    </div>
+                                {% else %}
+                                    <div class="row justify-content-center"">
+                                        <a href="/games/{{ session.game_type}}" class="btn btn-outline-dark">Replay</a>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -125,5 +141,22 @@
             </div>
         </div>
     </section>
+    <script>
+        $(document).ready(function(){
+            $("ul.sentence-sorting").sortable({
+                update: function( event, ui ) {
+                    updateOrder();
+                }
+            });
+        });
+        function updateOrder() {
+            var item_order = new Array();
+            $('ul.sentence-sorting li').each(function() {
+                item_order.push($(this).attr("id"));
+            });
+            var answer = item_order;
+            document.getElementById("answer").value = answer;
+        }
+    </script>
 </body>
 </html>

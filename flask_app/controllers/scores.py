@@ -16,7 +16,23 @@ def scoreboard():
         data = {
             'user_id': session['user_id'],
             'email': session['email'],
-            'game_type': 'addition'
+            'game_type': session['game_type']
+        }
+        user=Logins.get_user(data)
+        # game_types=Games.get_game_types()
+        scores=Scores.get_all(data)
+        print('*** 200 ***')
+        return render_template("/scoreboard.html", user=user, scores=scores)
+    else:
+        return redirect("/login")
+
+@app.route("/scoreboard/<string:game_type>")
+def scoreboard_load(game_type):
+    if session.get('logged_in') == True:
+        data = {
+            'user_id': session['user_id'],
+            'email': session['email'],
+            'game_type': game_type
         }
         user=Logins.get_user(data)
         # game_types=Games.get_game_types()

@@ -60,15 +60,15 @@ def game_load(game_type, level):
                     'level': session['level']
                 }
                 game_level_data=Games.get_level_data(data)
-                session['min_digit']=game_level_data.min_digit
-                session['max_digit']=game_level_data.max_digit
+                session['min_element']=game_level_data.min_element
+                session['max_element']=game_level_data.max_element
                 session['min_line']=game_level_data.min_line
                 session['max_line']=game_level_data.max_line
                 session['max_question']=game_level_data.max_question
                 session['question_total'] = 0
                 session['question_correct'] = 0
                 session['question_incorrect'] = 0
-                print('*** 400B ***', game_level_data, game_level_data.min_digit)
+                print('*** 400B ***', game_level_data, game_level_data.min_element)
                 print('*** 400C ***', level, type(level), session['level'], type(session['level']))
         user=Logins.get_user(data)
         return redirect(url_for("game_play", game_type=session['game_type'], level=session['level']))
@@ -87,7 +87,7 @@ def game_play(game_type, level):
                     if session['question_total'] == 0:
                         #Generate Mininum number for random range
                         min_num='1'
-                        count = session['min_digit']
+                        count = session['min_element']
                         while count > 1:
                             min_num += '0'
                             count -= 1
@@ -96,7 +96,7 @@ def game_play(game_type, level):
 
                         #Generate Maximum number for random range
                         max_num='9'
-                        count = session['max_digit']
+                        count = session['max_element']
                         while count > 1:
                             max_num += '9'
                             count -= 1

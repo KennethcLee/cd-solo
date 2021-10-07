@@ -35,6 +35,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="/games/addition">Addition</a>
+                    <a class="dropdown-item" href="/games/sentencesorting">Sentence Sorting</a>
                 </div>
                 </li>
                 <li class="nav-item">
@@ -68,14 +69,34 @@
             <div class="form-group d-inline">
                 <div class="row">
                     <div class="col-lg-1"></div>
-                    <div class="col-lg-2">
-                        {% for j in range(1, 11) %}
-                            <div class="row">
-                                <a href="/games/{{ data.game_type }}/{{ j }}/loading" class="btn btn-outline-dark">Level {{ j }}</a>
-                            </div>
-                        {% endfor %}
+                    <div class="col-lg-10">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Level</th>
+                                    <th scope="col">Max Elements</th>
+                                    <th scope="col">Max Lines</th>
+                                    <th scope="col">Points per question</th>
+                                    <th scope="col">Questions</th>
+                                    <th scope="col"></th>                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for j in get_menu_data %}
+                                    <tr>
+                                        <td>{{ j.level }}</td>
+                                        <td>{{ j.max_element }}</td>
+                                        <td>{{ j.max_line }}</td>
+                                        <td>{{ j.score_question }}</td>
+                                        <td>{{ j.max_question }}</td>
+                                        <td>
+                                            <a href="/games/{{ data.game_type }}/{{ j.level }}/loading" class="btn btn-outline-dark">Play</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="col-lg-2"></div>
                 </div>
             </div>
         </div>

@@ -8,6 +8,7 @@ flask = "*"
 pymysql = "*"
 cryptography = "*"
 flask-bcrypt = "*"
+jsonify = "*"
 
 [dev-packages]
 

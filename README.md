@@ -1,5 +1,5 @@
 #Python
-pipenv install flask PyMySql cryptography flask-bcrypt
+pipenv install flask PyMySql cryptography flask-bcrypt jsonify
 
 pipenv --venv
 
@@ -22,23 +22,82 @@ SELECT * FROM users JOIN scores on users.id = scores.user_id JOIN game_level on 
 SELECT * FROM game_level;
 SELECT * FROM game_level WHERE game_type = 'addition' AND level = 2;
 SELECT max_int, max_line FROM game_level WHERE game_type = 'addition' AND level = 2;
+SELECT * FROM game_level WHERE game_type = 'addition' ORDER BY level;
+
+ALTER TABLE game_level MODIFY COLUMN game_type
+ENUM('addition','sentencesorting');
+
+SELECT * FROM sentence_sorting_data;
+
+SELECT * FROM game_level_sentence_sorting_data;
+SELECT * FROM sentence_sorting_data 
+JOIN game_level_sentence_sorting_data 
+ON game_level_sentence_sorting_data.id = sentence_sorting_data.id
+JOIN game_level
+ON game_level_sentence_sorting_data.game_level_id = game_level.id
+WHERE game_level_sentence_sorting_data.game_level_id = 1
+
+ORDER BY RAND()
+LIMIT 10;
 
 DELETE FROM scores;
+DELETE FROM sentence_sorting_data;
+DELETE FROM game_level_sentence_sorting_data;
 
-INSERT INTO scores(user_id, game_level_id, score, question_total, question_correct, datetime, created_at, updated_at) VALUES
-	(1, 1, 10, 10, 1, '2021-08-01 12:00:00', now(), now()),
-    (1, 1, 60, 10, 6, '2021-08-12 14:00:00', now(), now()),
-	(1, 2, 40, 10, 4, '2021-09-02 02:00:00', now(), now()),
-    (1, 2, 20, 10, 2, '2021-09-14 19:00:00', now(), now());
+INSERT INTO scores(user_id, game_level_id, score, question_total, question_correct, created_at, updated_at) VALUES
+	(1, 1, 10, 10, 1, now(), now()),
+    (1, 1, 60, 10, 6, now(), now()),
+	(1, 2, 40, 10, 4, now(), now()),
+    (1, 2, 20, 10, 2, now(), now());
+    
+INSERT INTO game_level(game_type, game_name, level, min_element, max_element, min_line, max_line, max_question, score_question, created_at, updated_at) VALUES
+	(1, 'Addition', 1, 1, 1, 2, 2, 10, 10, now(), now()),
+	(1, 'Addition', 2, 1, 2, 3, 3, 10, 15, now(), now()),
+    (1, 'Addition', 3, 2, 2, 4, 4, 10, 20, now(), now()),
+    (1, 'Addition', 4, 2, 3, 2, 2, 10, 25, now(), now()),
+    (1, 'Addition', 5, 3, 3, 3, 3, 10, 30, now(), now()),
+    (1, 'Addition', 6, 2, 4, 4, 4, 10, 35, now(), now()),
+    (1, 'Addition', 7, 3, 4, 2, 2, 10, 40, now(), now()),
+    (1, 'Addition', 8, 4, 4, 3, 3, 10, 45, now(), now()),
+    (1, 'Addition', 9, 2, 5, 4, 4, 10, 50, now(), now()),
+    (1, 'Addition', 10, 3, 5, 2, 2, 10, 55, now(), now());
 
-INSERT INTO game_level(game_type, level, min_digit, max_digit, min_line, max_line, max_question, score_question, created_at, updated_at) VALUES
-	(1, 1, 1, 1, 2, 2, 10, 10, now(), now()),
-	(1, 2, 1, 2, 3, 3, 10, 15, now(), now()),
-    (1, 3, 2, 2, 4, 4, 10, 20, now(), now()),
-    (1, 4, 2, 3, 2, 2, 10, 25, now(), now()),
-    (1, 5, 3, 3, 3, 3, 10, 30, now(), now()),
-    (1, 6, 2, 4, 4, 4, 10, 35, now(), now()),
-    (1, 7, 3, 4, 2, 2, 10, 40, now(), now()),
-    (1, 8, 4, 4, 3, 3, 10, 45, now(), now()),
-    (1, 9, 2, 5, 4, 4, 10, 50, now(), now()),
-    (1, 10, 3, 5, 2, 2, 10, 55, now(), now());
+INSERT INTO game_level(game_type, game_name, level, min_element, max_element, min_line, max_line, max_question, score_question, created_at, updated_at) VALUES
+	(2, 'Sentence Sorting', 1, 3, 3, 1, 1, 10, 10, now(), now()),
+	(2, 'Sentence Sorting', 2, 3, 4, 1, 1, 10, 15, now(), now()),
+    (2, 'Sentence Sorting', 3, 4, 5, 1, 1, 10, 20, now(), now()),
+    (2, 'Sentence Sorting', 4, 5, 6, 1, 1, 10, 25, now(), now()),
+    (2, 'Sentence Sorting', 5, 6, 7, 1, 1, 10, 30, now(), now()),
+    (2, 'Sentence Sorting', 6, 7, 8, 1, 1, 10, 35, now(), now()),
+    (2, 'Sentence Sorting', 7, 8, 9, 1, 1, 10, 40, now(), now()),
+    (2, 'Sentence Sorting', 8, 9, 10, 2, 2, 10, 45, now(), now()),
+    (2, 'Sentence Sorting', 9, 3, 3, 2, 2, 10, 50, now(), now()),
+    (2, 'Sentence Sorting', 10, 3, 4, 2, 2, 10, 55, now(), now());
+    
+    
+INSERT INTO sentence_sorting_data(num_element, game_data, created_at, updated_at) VALUES
+	(3, 'I can read.', now(), now()),
+	(3, 'You can read.', now(), now()),
+	(3, 'I can count.', now(), now()),
+	(3, 'She can eat.', now(), now()),
+	(3, 'Do you play?', now(), now()),
+	(3, 'He can listen.', now(), now()),
+    (3, 'Dog ate homework.', now(), now()),
+	(3, 'Cat sleeps late.', now(), now()),
+	(3, 'Parrot flies fast.', now(), now()),
+   	(3, 'You can color.', now(), now()),
+	(3, 'He threw balls.', now(), now());
+    
+INSERT INTO game_level_sentence_sorting_data(game_level_id, sentence_sorting_data_id, created_at, updated_at) VALUES
+	(11, 1, now(), now()),
+	(11, 2, now(), now()),
+    (11, 3, now(), now()),
+    (11, 4, now(), now()),
+    (11, 5, now(), now()),
+    (11, 6, now(), now()),
+    (11, 7, now(), now()),
+    (11, 8, now(), now()),
+    (11, 9, now(), now()),
+    (11, 10, now(), now()),
+    (11, 11, now(), now());
+
