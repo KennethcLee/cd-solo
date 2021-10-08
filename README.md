@@ -18,6 +18,8 @@ SELECT * FROM users;
 SELECT * FROM scores;
 SELECT * FROM users JOIN scores on users.id = scores.user_id JOIN game_level on scores.game_level_id = game_level.id;
 SELECT * FROM users JOIN scores on users.id = scores.user_id JOIN game_level on scores.game_level_id = game_level.id WHERE game_type = 'addition' ORDER BY score DESC LIMIT 10;
+SELECT * FROM users JOIN scores on users.id = scores.user_id JOIN game_level on scores.game_level_id = game_level.id WHERE game_type = 'sentencesorting' ORDER BY score DESC LIMIT 10;
+SELECT id FROM game_level WHERE game_type ='sentencesorting' AND level = 1;
 
 SELECT * FROM game_level;
 SELECT * FROM game_level WHERE game_type = 'addition' AND level = 2;
@@ -30,19 +32,22 @@ ENUM('addition','sentencesorting');
 SELECT * FROM sentence_sorting_data;
 
 SELECT * FROM game_level_sentence_sorting_data;
-SELECT * FROM sentence_sorting_data 
+SELECT sentence_sorting_data.id, num_element, game_data, sentence_sorting_data.created_at, sentence_sorting_data.updated_at FROM sentence_sorting_data 
 JOIN game_level_sentence_sorting_data 
 ON game_level_sentence_sorting_data.id = sentence_sorting_data.id
 JOIN game_level
 ON game_level_sentence_sorting_data.game_level_id = game_level.id
-WHERE game_level_sentence_sorting_data.game_level_id = 1
-
+WHERE game_level.level = 1
+AND game_type='sentencesorting'
 ORDER BY RAND()
 LIMIT 10;
 
 DELETE FROM scores;
 DELETE FROM sentence_sorting_data;
 DELETE FROM game_level_sentence_sorting_data;
+
+INSERT INTO scores(user_id, game_level_id, score, question_total, question_correct, created_at, updated_at) VALUES
+	(1, (SELECT id FROM game_level WHERE game_type ='sentencesorting' AND level = 1), 10, 10, 1, now(), now());
 
 INSERT INTO scores(user_id, game_level_id, score, question_total, question_correct, created_at, updated_at) VALUES
 	(1, 1, 10, 10, 1, now(), now()),
@@ -101,3 +106,24 @@ INSERT INTO game_level_sentence_sorting_data(game_level_id, sentence_sorting_dat
     (11, 10, now(), now()),
     (11, 11, now(), now());
 
+
+#google Cloud
+https://codelabs.developers.google.com/codelabs/cloud-translation-python3#1
+https://cloud.google.com/translate/docs/reference/libraries/v3/python
+
+
+https://console.cloud.google.com/home/dashboard
+
+gcloud services enable translate.googleapis.com
+
+pip install --upgrade google-cloud-translate
+
+Create Service Account
+https://console.cloud.google.com/iam-admin/serviceaccounts/create
+
+Role: Cloud Translation
+
+https://console.cloud.google.com/iam-admin/serviceaccounts/details/
+
+On linux:
+export GOOGLE_APPLICATION_CREDENTIALS="/Users/klee/codingdojo/cd-solo/static/files/credentials.json"

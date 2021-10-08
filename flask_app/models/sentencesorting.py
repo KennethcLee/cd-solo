@@ -1,4 +1,6 @@
-from os import stat
+from google.cloud import translate
+import os
+from google.oauth2 import service_account
 from flask import flash
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask_app import app
@@ -21,7 +23,36 @@ class SentenceSorting:
         print('***  9000A  ***', query)
         print('***  9000B  ***', questions)
         for j in questions:
+            print('***  9000J  ***', j['game_data'])
+            j['game_data'] = SentenceSorting.translate_text(j['game_data'])
             result.append(cls(j))
-        print('***  9000B  ***', result)
+        print('***  9000D  ***', result)
         return result
 
+    @staticmethod
+    def translate_text(text, project_id="celtic-shape-328321"):
+        print(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
+        # credentials = service_account.Credentials.from_service_account_file("/credentials.json")
+        # credentials = service_account.Credentials.from_service_account_file()
+
+        client = translate.TranslationServiceClient()
+
+        location = "global"
+
+        parent = f"projects/{project_id}/locations/{location}"
+
+        # Detail on supported types can be found here:
+        # https://cloud.google.com/translate/docs/supported-formats
+        response = client.translate_text(
+            request={
+                "parent": parent,
+                "contents": [text],
+                "mime_type": "text/plain",  # mime types: text/plain, text/html
+                "source_language_code": "en-US",
+                "target_language_code": "fr",
+            }
+        )
+
+        # Display the translation for each input text provided
+        for translation in response.translations:
+            print("*** 20000 *** Translated text: {}".format(translation.translated_text))

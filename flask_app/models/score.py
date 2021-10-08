@@ -27,7 +27,6 @@ class Scores:
         scores = []
         if results:
             for j in results:
-                print('***  2000A  ***', j)
                 scores.append(cls(j))
         return scores
 

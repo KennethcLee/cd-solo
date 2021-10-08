@@ -176,8 +176,6 @@ def game_play(game_type, level):
                     for j in range(0, len(validate)):
                         question_data.append([j, validate[j]])
                     random.shuffle(question_data)
-                    session['question_data'] = question_data
-                    print('*** 600M ***', question_data, session['question_data'], validate, len(session['question_data']))
                     session['question_data']=question_data
                     session['question_incorrect']=session['question_total']-session['question_correct']
                     session['question_total']+=1
@@ -197,14 +195,6 @@ def game_play(game_type, level):
         return render_template("%s_play.html" % game_type)
     else:
         return redirect("/login")
-
-# @app.route("/orderupdate",methods=["POST","GET"])
-# def orderupdate():
-#     print('*** 800A ***')
-#     if request.method == 'POST':
-#         print('*** 800B ***', request.form)
-#         getorder = request.form['order']
-#     return jsonify(getorder)
 
 
 

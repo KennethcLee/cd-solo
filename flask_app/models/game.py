@@ -29,9 +29,9 @@ class Games:
         print('***  3000A  ***', query)
         result = []
         levels = connectToMySQL('games').query_db(query, data)
-        print('***  3000B  ***', result)
         for j in levels:
             result.append(cls(j))
+        print('***  3000B  ***', result)
         return result
 
     @classmethod
