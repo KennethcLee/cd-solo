@@ -9,6 +9,9 @@ pymysql = "*"
 cryptography = "*"
 flask-bcrypt = "*"
 jsonify = "*"
+nltk = "*"
+textblob = "*"
+googletrans = "*"
 
 [dev-packages]
 

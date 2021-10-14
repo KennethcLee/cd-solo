@@ -1,5 +1,6 @@
 #Python
-pipenv install flask PyMySql cryptography flask-bcrypt jsonify
+pipenv install flask PyMySql cryptography flask-bcrypt jsonify 
+(Deprecated: nltk textblob)
 
 pipenv --venv
 
@@ -117,6 +118,7 @@ https://console.cloud.google.com/home/dashboard
 gcloud services enable translate.googleapis.com
 
 pip install --upgrade google-cloud-translate
+pip install googletrans==3.1.0a0
 
 Create Service Account
 https://console.cloud.google.com/iam-admin/serviceaccounts/create
@@ -125,5 +127,19 @@ Role: Cloud Translation
 
 https://console.cloud.google.com/iam-admin/serviceaccounts/details/
 
-On linux:
-export GOOGLE_APPLICATION_CREDENTIALS="/Users/klee/codingdojo/cd-solo/static/files/credentials.json"
+Create Key:
+https://console.cloud.google.com/iam-admin/serviceaccounts/detail
+
+Google translge Language:
+https://cloud.google.com/translate/docs/languages
+
+#Microsoft Azure Translate
+Setup Azure account
+Login to portal:
+https://portal.azure.com/#home
+
+Create the tranlate service
+Use API service code:
+https://docs.microsoft.com/en-us/azure/cognitive-services/translator/quickstart-translator?WT.mc_id=Portal-Microsoft_Azure_ProjectOxford&tabs=python
+
+Copy Key from site

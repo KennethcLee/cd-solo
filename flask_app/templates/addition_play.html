@@ -115,9 +115,15 @@
                                 <h3 class="text-success">{{ session.question_correct }}</h3>
                                 <h3>Incorrect:</h3>
                                 <h3 class="text-danger">{{ session.question_incorrect}}</h3>
-                                <div class="row">
-                                    <a href="/games/{{ session.game_type}}/{{ session.level}}/loading" class="btn btn-outline-dark">Replay</a>
-                                </div>
+                                {% if not session.gameover %}
+                                    <div class="row justify-content-center">
+                                        <a href="/games/{{ session.game_type}}" class="btn btn-outline-dark">Restart</a>
+                                    </div>
+                                {% else %}
+                                    <div class="row justify-content-center"">
+                                        <a href="/games/{{ session.game_type}}" class="btn btn-outline-dark">Replay</a>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

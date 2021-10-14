@@ -90,7 +90,23 @@
                                         <td>{{ j.score_question }}</td>
                                         <td>{{ j.max_question }}</td>
                                         <td>
-                                            <a href="/games/{{ data.game_type }}/{{ j.level }}/loading" class="btn btn-outline-dark">Play</a>
+                                            <form action="/games/{{ data.game_type }}/{{ j.level }}/loading" method="POST">
+                                                <div class="form-group">
+                                                    {% if j.game_type == 'sentencesorting' %}
+                                                    <select class="form-select form-select-sm" aria-label=".form-select-sm" name="language">
+                                                        <option selected>Select Language</option>
+                                                        <option value="en">English</option>
+                                                        <option value="zh-cn">中文</option>
+                                                        <option value="es-mx">español</option>
+                                                        <option value="ko-KR">한국인</option>
+                                                        <option value="de-DE">Deutsch</option>
+                                                        <option value="ja">日本</option>
+                                                        <option value="ar">عربي</option>
+                                                    </select>
+                                                    {% endif %}
+                                                    <button type="submit" class="btn btn-outline-dark">Play</button>
+                                                </div>
+                                            </form>
                                         </td>
                                     </tr>
                                 {% endfor %}

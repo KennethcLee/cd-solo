@@ -49,7 +49,7 @@ def game_menu(game_type):
     else:
         return redirect("/login")
 
-@app.route("/games/<string:game_type>/<int:level>/loading")
+@app.route("/games/<string:game_type>/<int:level>/loading", methods=['GET', 'POST'])
 def game_load(game_type, level):
     #Load Game data for all games
     if session.get('logged_in') == True:
@@ -75,8 +75,9 @@ def game_load(game_type, level):
                 session['question_total'] = 0
                 session['question_correct'] = 0
                 session['question_incorrect'] = 0
-                print('*** 400B ***', game_level_data, game_level_data.min_element)
-                print('*** 400C ***', level, type(level), session['level'], type(session['level']))
+                if session['game_type'] == "sentencesorting":
+                    session['language'] = request.form['language']
+                print('*** 400C ***', level, type(level), session['level'], type(session['level']), request.form, game_level_data, game_level_data.min_element)
         user=Logins.get_user(data)
         return redirect(url_for("game_play", game_type=session['game_type'], level=session['level']))
     else:
@@ -91,24 +92,24 @@ def game_play(game_type, level):
             print('*** 500C ***', session['question_total'], session['max_question'])
 
             #Game Logic for Addition
-            count = 0
+            element = 0
             if session['game_type']=="addition":
                 if session['question_total'] == 0:
                         #Generate Mininum number for random range
                         min_num='1'
-                        count = session['min_element']
-                        while count > 1:
+                        element = session['min_element']
+                        while element > 1:
                             min_num += '0'
-                            count -= 1
+                            element -= 1
                         min_num=int(min_num)
                         session['min_num']=min_num
 
                         #Generate Maximum number for random range
                         max_num='9'
-                        count = session['max_element']
-                        while count > 1:
+                        element = session['max_element']
+                        while element > 1:
                             max_num += '9'
-                            count -= 1
+                            element -= 1
                         max_num=int(max_num)
                         session['max_num']=max_num
                         print('*** 500F ***', min_num, type(min_num), max_num, type(max_num))
@@ -158,6 +159,9 @@ def game_play(game_type, level):
                     validate = []
                     for j in range(0, len(session['answer'])):
                         validate.append(j)
+                    if session['language'] in ['ar']:
+                            validate.reverse()
+                            print('*** 600M2 ***', validate)
                     print('*** 600C ***', session['answer'], type(session['answer']), validate)
                     if session['answer'] == validate:
                         session['question_correct'] += 1
@@ -167,11 +171,18 @@ def game_play(game_type, level):
                 if session['question_total'] < session['max_question']:
                     data = {
                         'game_type': session['game_type'],
-                        'level': session['level']
+                        'level': session['level'],
+                        'max_question': session['max_question']
                     }
-                    questions = SentenceSorting.get_game_data(data)
-                    print('*** 600L ***', session['question_total'])
-                    validate = list( (questions[session['question_total']].game_data).split(" ") )
+                    print('*** 600L2 ***', session['language'])
+
+                    questions = SentenceSorting.get_game_data(data, 'en', session['language'])
+                    print('*** 600M ***', questions, questions[0].game_data, session['question_total'])
+                    #Asian language single sentence format do not use spaces
+                    if session['language'] in ['zh-cn', 'ko-KR', 'ja']:
+                        validate = list(questions[0].game_data)
+                    else :
+                        validate = list( (questions[0].game_data).split(" ") )
                     question_data = []
                     for j in range(0, len(validate)):
                         question_data.append([j, validate[j]])
@@ -179,6 +190,7 @@ def game_play(game_type, level):
                     session['question_data']=question_data
                     session['question_incorrect']=session['question_total']-session['question_correct']
                     session['question_total']+=1
+                    print('*** 600N ***', question_data, validate)
                 else:
                     session['gameover'] = True
                     data = {
@@ -191,7 +203,7 @@ def game_play(game_type, level):
                     }
                     result = Scores.save_score(data)
                     print('*** 600Q ***', result)
-
+        print('*** 600R ***')
         return render_template("%s_play.html" % game_type)
     else:
         return redirect("/login")
